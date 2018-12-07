@@ -1,0 +1,5 @@
+# Documentation
+include README.md
+
+# Requirements
+include requirements.txt
