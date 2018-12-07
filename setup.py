@@ -10,13 +10,13 @@ def read_requirements():
 
 
 setup(
-    version="0.1",
+    version="1.0",
     name="pyFireEye",
-    description="",
+    description="Python API bindings for FireEye Products",
     long_description="",
-    url="https://git.cirt.emrsn.org/Libraries/pyFireEye",
-    author="Isaiah Eichen",
-    author_email="isaiah.eichen@emerson.com",
+    url="https://gitlab.com/EmersonElectricCo/pyFireEye",
+    author="Isaiah Eichen, Grant Steiner, Timothy Lemm",
+    author_email="isaiah.eichen[at]emerson.com, grant.steiner[at]emerson.com, timothy.lemm[at]emerson.com",
     packages=find_packages(),
     install_requires=read_requirements()
 )
