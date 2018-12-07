@@ -16,7 +16,7 @@ setup(
     long_description="",
     url="https://gitlab.com/EmersonElectricCo/pyFireEye",
     author="Isaiah Eichen, Grant Steiner, Timothy Lemm",
-    author_email="isaiah.eichen[at]emerson.com, grant.steiner[at]emerson.com, timothy.lemm[at]emerson.com",
+    author_email="timothy.lemm@emerson.com",
     packages=find_packages(),
     install_requires=read_requirements()
 )
