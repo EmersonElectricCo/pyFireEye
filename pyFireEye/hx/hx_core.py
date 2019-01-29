@@ -910,7 +910,7 @@ class Containment(_HX):
         kwargs["json"]["state"] = "contain"
         return self._base_request(**kwargs)
 
-    @expected_response(expected_status_code=204, expected_format=JSON)
+    @expected_response(expected_status_code=204, expected_format=DEFAULT)
     @template_request(method="DELETE", route="/hosts/<agent_id>/containment")
     def cancel_containment_for_host(self, agent_id, **kwargs):
         return self._base_request(**kwargs)
