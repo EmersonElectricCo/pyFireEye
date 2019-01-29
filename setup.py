@@ -10,7 +10,7 @@ def read_requirements():
 
 
 setup(
-    version="1.0.1",
+    version="1.0.2",
     name="pyFireEye",
     description="Python API bindings for FireEye Products",
     long_description="",
