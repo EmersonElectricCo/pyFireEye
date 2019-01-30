@@ -70,11 +70,23 @@ class Authentication(_HX):
     BASIC_HEADER = "Authorization"
     token = ""
 
-    def __init__(self, hx_host, hx_port=None, verify=False, token_auth=False, username="", password=""):
+    def __init__(self, hx_host, hx_port=None, verify=False, token_auth=False, username="", password="", token=""):
+        """
+        providing a token automatically sets token_auth to true
+        :param hx_host:
+        :param hx_port:
+        :param verify:
+        :param token_auth:
+        :param username:
+        :param password:
+        :param token:
+        """
         _HX.__init__(self, hx_host, hx_port=hx_port, verify=verify)
         self.username = username
         self.password = password
-        self.token_auth = token_auth
+        self.token = token
+        self.token_auth = True if token_auth else False or True if self.token else False
+        self.AUTHENTICATION = self
 
     def get_auth_header(self):
         """
@@ -88,9 +100,12 @@ class Authentication(_HX):
 
     def authenticate(self, username="", password="", token_auth=None):
         """
-        user username and password to login. If not using token auth, this will simply be a test to see if
-        provided username and password work. If username and password and are not provided, the class will look
-        to ones provided during init. If they are not there, throw an exception
+        user username and password to use for authentication.
+        If not using token auth, this will simply set username and password for
+        future Basic Auth requests. If username and password and are not provided, it will look
+        to ones provided during init. If token_auth is not provided or false, existing token will be logged out.
+        If token auth is true and there is an old token, it will attempt logout before grabbing the new one.
+
         :param username: username
         :param password: password
         :param token_auth: True/False, if you want to use token authentication
@@ -102,21 +117,26 @@ class Authentication(_HX):
             self.username = username
             self.password = password
 
-        if not self.username or not self.password:
-            raise InsufficientCredentialsException("username", "password")
+        if self.token_auth:
+            if self.token:
+                self.logout()
+            response = self.auth(self.username, self.password)
+            if isinstance(response, ErrorResponse):
+                raise FireEyeError(response)
 
-        response = self.auth(self.username, self.password)
-        if isinstance(response, ErrorResponse):
-            raise FireEyeError(response)
-
-        self.token = response.headers[self.TOKEN_HEADER]
-        self.AUTHENTICATION = self
+            self.token = response.headers[self.TOKEN_HEADER]
+        else:
+            if self.token:
+                self.token_auth = True
+                self.logout()
+                self.token_auth = False
+            self.token = None
 
     @expected_response(expected_status_code=204, expected_format=DEFAULT)
     @template_request(method="GET", route="/token", require_auth=False)
     def auth(self, username, password, **kwargs):
         """
-        api method for authentication endpoint
+        api method for authentication endpoint. on success, the token will be returned in the headers
         :param username: username for authentication
         :param password: password for authentication
         :param kwargs: passthrough from template request
