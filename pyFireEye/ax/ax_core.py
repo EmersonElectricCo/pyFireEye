@@ -55,11 +55,13 @@ class Authentication(_AX):
     BASIC_HEADER = "Authorization"
     token = ""
 
-    def __init__(self, ax_host, ax_port=None, verify=False, token_auth=False, username="", password=""):
+    def __init__(self, ax_host, ax_port=None, verify=False, token_auth=False, username="", password="", token=""):
         _AX.__init__(self, ax_host, ax_port=ax_port, verify=verify)
         self.username = username
         self.password = password
-        self.token_auth = token_auth
+        self.token = token
+        self.token_auth = True if token_auth else False or True if self.token else False
+        self.AUTHENTICATION = self
 
     def get_auth_header(self):
         """
@@ -86,16 +88,20 @@ class Authentication(_AX):
             self.username = username
             self.password = password
 
-        if not self.username or not self.password:
-            raise InsufficientCredentialsException("username", "password")
+        if self.token_auth:
+            if self.token:
+                self.logout()
+            response = self.auth(self.username, self.password)
+            if isinstance(response, ErrorResponse):
+                raise FireEyeError(response)
 
-        response = self.auth(self.username, self.password)
-        if isinstance(response, ErrorResponse):
-            raise FireEyeError(response)
-
-        self.token = response.headers[self.TOKEN_HEADER]
-        self.token_auth = True
-        self.AUTHENTICATION = self
+            self.token = response.headers[self.TOKEN_HEADER]
+        else:
+            if self.token:
+                self.token_auth = True
+                self.logout()
+                self.token_auth = False
+            self.token = None
 
     @expected_response(expected_status_code=200, expected_format=DEFAULT)
     @template_request(method="POST", route="/auth/login", require_auth=False)
