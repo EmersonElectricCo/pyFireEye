@@ -17,7 +17,7 @@ from .hx_core import \
 
 class HX:
 
-    def __init__(self, hx_host, hx_port=None, verify=False, token_auth=False, username="", password=""):
+    def __init__(self, hx_host, hx_port=None, verify=False, token_auth=False, username="", password="", token=""):
         """
         Class containing all hx endpoints with unified authenticator
         :param hx_host: hx server endpoint - https://hx.appliance.com ...
@@ -32,9 +32,9 @@ class HX:
             from requests.packages.urllib3.exceptions import InsecureRequestWarning
             requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-        self._authenticator = Authentication(hx_host=hx_host, hx_port=hx_port, verify=verify, token_auth=token_auth, username=username, password=password)
-        if username and password:
-            self._authenticator.authenticate(username=username, password=password)
+        self._authenticator = Authentication(hx_host=hx_host, hx_port=hx_port, verify=verify, token_auth=token_auth, username=username, password=password, token=token)
+        if username and password and not token:
+            self._authenticator.authenticate(username=username, password=password, token_auth=token_auth)
         self.hosts = Hosts(hx_host=hx_host, hx_port=hx_port, verify=verify, authenticator=self._authenticator)
         self.host_sets = HostSets(hx_host=hx_host, hx_port=hx_port, verify=verify, authenticator=self._authenticator)
         self.search = EnterpriseSearch(hx_host=hx_host, hx_port=hx_port, verify=verify, authenticator=self._authenticator)
@@ -50,10 +50,16 @@ class HX:
         self.custom_channels = CustomChannels(hx_host=hx_host, hx_port=hx_port, verify=verify, authenticator=self._authenticator)
 
     def reauth(self):
-        self._authenticator.authenticate()
+        if self._authenticator.token_auth:
+            self._authenticator.authenticate(token_auth=True)
 
     def authenticate(self, username, password, token_auth=None):
         self._authenticator.authenticate(username=username, password=password, token_auth=token_auth)
 
     def logout(self):
-        self._authenticator.logout()
+        if self._authenticator.token:
+            token_auth = self._authenticator.token_auth
+            self._authenticator.token_auth = True
+            self._authenticator.logout()
+            self._authenticator.token_auth = token_auth
+

@@ -7,16 +7,16 @@ class AX:
 
     """
 
-    def __init__(self, ax_host, ax_port=None, verify=False, token_auth=False, username="", password=""):
+    def __init__(self, ax_host, ax_port=None, verify=False, token_auth=False, username="", password="", token=""):
 
         if not verify:
             import requests
             from requests.packages.urllib3.exceptions import InsecureRequestWarning
             requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-        self._authenticator = Authentication(ax_host=ax_host, ax_port=ax_port, verify=verify, token_auth=token_auth, username=username, password=password)
-        if username and password:
-            self._authenticator.authenticate(username=username, password=password)
+        self._authenticator = Authentication(ax_host=ax_host, ax_port=ax_port, verify=verify, token_auth=token_auth, username=username, password=password, token=token)
+        if username and password and not token:
+            self._authenticator.authenticate(username=username, password=password, token_auth=token_auth)
         self.alerts = Alerts(ax_host=ax_host, ax_port=ax_port, verify=verify, authenticator=self._authenticator)
         self.submissions = Submission(ax_host=ax_host, ax_port=ax_port, verify=verify, authenticator=self._authenticator)
         self.reports = Reports(ax_host=ax_host, ax_port=ax_port, verify=verify, authenticator=self._authenticator)
@@ -26,12 +26,15 @@ class AX:
         self.custom_ioc = CustomIOC(ax_host=ax_host, ax_port=ax_port, verify=verify, authenticator=self._authenticator)
 
     def reauth(self):
-        return self._authenticator.authenticate()
+        if self._authenticator.token_auth:
+            self._authenticator.authenticate(token_auth=True)
 
     def authenticate(self, username, password, token_auth=None):
-        """ """
-        return self._authenticator.authenticate(username=username, password=password, token_auth=token_auth)
+        self._authenticator.authenticate(username=username, password=password, token_auth=token_auth)
 
     def logout(self):
-        """ """
-        return self._authenticator.logout()
+        if self._authenticator.token:
+            token_auth = self._authenticator.token_auth
+            self._authenticator.token_auth = True
+            self._authenticator.logout()
+            self._authenticator.token_auth = token_auth

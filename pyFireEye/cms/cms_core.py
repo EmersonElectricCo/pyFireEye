@@ -42,11 +42,13 @@ class Authentication(_CMS):
     BASIC_HEADER = "Authorization"
     token = ""
 
-    def __init__(self, cms_host, cms_port=None, verify=False, token_auth=False, username="", password=""):
+    def __init__(self, cms_host, cms_port=None, verify=False, token_auth=False, username="", password="", token=""):
         _CMS.__init__(self, cms_host, cms_port=cms_port, verify=verify)
         self.username = username
         self.password = password
-        self.token_auth = token_auth
+        self.token = token
+        self.token_auth = True if token_auth else False or True if self.token else False
+        self.AUTHENTICATION = self
 
     def get_auth_header(self):
 
@@ -63,15 +65,20 @@ class Authentication(_CMS):
             self.username = username
             self.password = password
 
-        if not self.username or not self.password:
-            raise InsufficientCredentialsException("username", "password")
+        if self.token_auth:
+            if self.token:
+                self.logout()
+            response = self.auth(self.username, self.password)
+            if isinstance(response, ErrorResponse):
+                raise FireEyeError(response)
 
-        response = self.auth(self.username, self.password)
-        if isinstance(response, ErrorResponse):
-            raise FireEyeError(response)
-
-        self.token = response.headers[self.TOKEN_HEADER]
-        self.AUTHENTICATION = self
+            self.token = response.headers[self.TOKEN_HEADER]
+        else:
+            if self.token:
+                self.token_auth = True
+                self.logout()
+                self.token_auth = False
+            self.token = None
 
     @expected_response(expected_status_code=200, expected_format=DEFAULT)
     @template_request(method="POST", route="/auth/login", require_auth=False)
@@ -81,7 +88,14 @@ class Authentication(_CMS):
 
     @expected_response(expected_status_code=204, expected_format=DEFAULT)
     @template_request(method="POST", route="/auth/logout")
-    def logout(self, **kwargs):
+    def logout(self, token=None, **kwargs):
+        """
+        :param token: optional token to logout. if not provided will logout class's stored auth token
+        :param kwargs:
+        :return:
+        """
+        if token:
+            kwargs["headers"][self.TOKEN_HEADER] = token
 
         return self._base_request(**kwargs)
 
