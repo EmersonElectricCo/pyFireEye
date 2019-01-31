@@ -146,12 +146,15 @@ class Authentication(_HX):
 
     @expected_response(expected_status_code=204, expected_format=DEFAULT)
     @template_request(method="DELETE", route="/token")
-    def logout(self, **kwargs):
+    def logout(self, token=None, **kwargs):
         """
-        logout an existing token if using token auth
-        :param kwargs: passthrough from template request
-        :return: response if token auth, None otherwise
+        :param token: optional token to logout. if not provided will logout class's stored auth token
+        :param kwargs:
+        :return:
         """
+        if token:
+            kwargs["headers"][self.TOKEN_HEADER] = token
+
         return self._base_request(**kwargs)
 
 

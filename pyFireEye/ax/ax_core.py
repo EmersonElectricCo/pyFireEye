@@ -117,12 +117,15 @@ class Authentication(_AX):
 
     @expected_response(expected_status_code=204, expected_format=DEFAULT)
     @template_request(method="POST", route="/auth/logout")
-    def logout(self, **kwargs):
+    def logout(self, token=None, **kwargs):
         """
-
+        :param token: optional token to logout. if not provided will logout class's stored auth token
         :param kwargs:
         :return:
         """
+        if token:
+            kwargs["headers"][self.TOKEN_HEADER] = token
+
         return self._base_request(**kwargs)
 
 
