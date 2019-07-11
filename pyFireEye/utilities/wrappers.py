@@ -264,7 +264,7 @@ def expect_stream_response(expected_status=None):
                                          response.status_code, dict(response.headers), expected_status)
 
             else:
-                output = byte_type()
+                output = []
 
             for chunk in response.iter_content(chunk_size=4096):
                 if chunk:
@@ -272,14 +272,14 @@ def expect_stream_response(expected_status=None):
                     if output_file:
                         output.write(chunk)
                     else:
-                        output += chunk
+                        output.append(chucnk)
             if output_file:
                 output.close()
 
             if output_file:
                 stream_response_data["filename"] = output_file
             else:
-                stream_response_data["data"] = output
+                stream_response_data["data"] = byte_type().join(output)
 
             return StreamResponse(status=response.status_code, content=stream_response_data,
                                   headers=dict(response.headers))
