@@ -32,7 +32,8 @@ def _clean_params(request_params, **kwargs):
     """
     replaced_keys = []
 
-    for k, v in kwargs.items():
+    kwargs_copy = kwargs.copy()
+    for k, v in kwargs_copy.items():
         if k in param_arg_map and param_arg_map.get(k) in request_params:
             kwargs[param_arg_map.get(k)] = v
             replaced_keys.append(k)
