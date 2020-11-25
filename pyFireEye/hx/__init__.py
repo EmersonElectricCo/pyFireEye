@@ -12,7 +12,8 @@ from .hx_core import \
     Indicators, \
     IndicatorCategories, \
     Quarantine, \
-    Scripts
+    Scripts, \
+    ProcessTracker
 
 
 class HX:
@@ -48,6 +49,7 @@ class HX:
         self.scripts = Scripts(hx_host=hx_host, hx_port=hx_port, verify=verify, authenticator=self._authenticator)
         self.containment = Containment(hx_host=hx_host, hx_port=hx_port, verify=verify, authenticator=self._authenticator)
         self.custom_channels = CustomChannels(hx_host=hx_host, hx_port=hx_port, verify=verify, authenticator=self._authenticator)
+        self.process_tracker = ProcessTracker(hx_host=hx_host, hx_port=hx_port, verify=verify, authenticator=self._authenticator)
 
     def reauth(self):
         if self._authenticator.token_auth:
@@ -62,4 +64,3 @@ class HX:
             self._authenticator.token_auth = True
             self._authenticator.logout()
             self._authenticator.token_auth = token_auth
-
