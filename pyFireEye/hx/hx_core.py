@@ -11,7 +11,7 @@ from pyFireEye.utilities.utility import *
 
 
 class _HX:
-    
+
     """
     Base class for hx endpoints to derive from. will not work by itself unless you construct authenticator
     and set it manually, but you should never need to use it directly
@@ -172,9 +172,9 @@ class Hosts(_HX):
 
     @expected_response(expected_status_code=200, expected_format=JSON)
     @template_request(method="GET", route="/hosts",
-                      request_params=[HAS_ACTIVE_THREATS, HAS_ALERTS, HAS_EXECUTION_ALERTS, HAS_EXPLOIT_ALERTS, 
-                                      HAS_EXPLOIT_BLOCKS, HAS_MALWARE_ALERTS, HAS_MALWARE_CLEANED, 
-                                      HAS_MALWARE_QUARANTINED, HAS_PRESENCE_ALERTS, HAS_SHARE_MODE, HOSTS_SET_ID, LIMIT, 
+                      request_params=[HAS_ACTIVE_THREATS, HAS_ALERTS, HAS_EXECUTION_ALERTS, HAS_EXPLOIT_ALERTS,
+                                      HAS_EXPLOIT_BLOCKS, HAS_MALWARE_ALERTS, HAS_MALWARE_CLEANED,
+                                      HAS_MALWARE_QUARANTINED, HAS_PRESENCE_ALERTS, HAS_SHARE_MODE, HOSTS_SET_ID, LIMIT,
                                       OFFSET, SEARCH, SORT, FILTER_FIELD])
     def get_list_of_hosts(self, has_active_threats=None, has_alerts=None, has_execution_alerts=None,
                           has_exploit_alerts=None, has_exploit_blocks=None, has_malware_alerts=None,
@@ -215,7 +215,7 @@ class Hosts(_HX):
     @expected_response(expected_status_code=200, expected_format=JSON)
     @template_request(method="GET", route="/hosts/<agent_id>/live",
                       request_params=[OFFSET, LIMIT, SORT, FILTER_FIELD])
-    def get_list_data_acquisitions_for_host(self, agent_id, offset=None, limit=None, sort=None, 
+    def get_list_data_acquisitions_for_host(self, agent_id, offset=None, limit=None, sort=None,
                                             filter_field=None, **kwargs):
         return self._base_request(**kwargs)
 
@@ -364,16 +364,16 @@ class EnterpriseSearch(_HX):
     @template_request(method="POST", route="/searches/<id>/actions/stop")
     def stop_running_search(self, id, **kwargs):
         return self._base_request(**kwargs)
-    
+
     @expected_response(expected_status_code=200, expected_format=JSON)
-    @template_request(method="GET", route="/searches/<id>/hosts", 
+    @template_request(method="GET", route="/searches/<id>/hosts",
                       request_params=[OFFSET, LIMIT, SORT, FILTER_FIELD])
     def get_list_hosts_states_for_search(self, id, offset=None, limit=None, sort=None, filter_field=None, **kwargs):
         return self._base_request(**kwargs)
 
     @expected_response(expected_status_code=200, expected_format=JSON)
-    @template_request(method="GET", route="/searches/<id>/skipped_hosts", 
-                      request_params=[HAS_ACTIVE_THREATS, HAS_EXPLOIT_ALERTS, HAS_EXPLOIT_BLOCKS, HAS_MALWARE_ALERTS, 
+    @template_request(method="GET", route="/searches/<id>/skipped_hosts",
+                      request_params=[HAS_ACTIVE_THREATS, HAS_EXPLOIT_ALERTS, HAS_EXPLOIT_BLOCKS, HAS_MALWARE_ALERTS,
                                       HOSTS_SET_ID, LIMIT, OFFSET, SORT, FILTER_FIELD])
     def get_list_hosts_skipped_for_search(self, id, has_active_threats=None, has_exploit_alerts=None,
                                           has_exploit_blocks=None, has_malware_alerts=None, host_set_id=None,
@@ -392,7 +392,7 @@ class EnterpriseSearch(_HX):
 
     @expected_response(expected_status_code=200, expected_format=JSON)
     @template_request(method="GET", route="/searchs/<id>/results/<row_id>/hosts",
-                      request_params=[HAS_ACTIVE_THREATS, HAS_EXPLOIT_ALERTS, HAS_EXPLOIT_BLOCKS, HAS_MALWARE_ALERTS, 
+                      request_params=[HAS_ACTIVE_THREATS, HAS_EXPLOIT_ALERTS, HAS_EXPLOIT_BLOCKS, HAS_MALWARE_ALERTS,
                                       HAS_SHARE_MODE, HOSTS_SET_ID, LIMIT, OFFSET, SORT, FILTER_FIELD])
     def get_host_results_for_grid_row_search(self, id, row_id, has_active_threats=None, has_exploit_alerts=None,
                                              has_exploit_blocks=None, has_malware_alerts=None, has_share_mode=None,
@@ -473,7 +473,7 @@ class Indicators(_HX):
 
         :param category: newline separated string of conditions
         :param indicator:
-        :param conditions: 
+        :param conditions:
         :param kwargs:
         :return:
         """
@@ -486,7 +486,7 @@ class Indicators(_HX):
 
         :param category: newline separated string of conditions
         :param indicator:
-        :param conditions: 
+        :param conditions:
         :param kwargs:
         :return:
         """
@@ -545,14 +545,14 @@ class Conditions(_HX):
         return self._base_request(**kwargs)
 
     @expected_response(expected_status_code=200, expected_format=JSON)
-    @template_request(method="GET", route="/conditions", 
+    @template_request(method="GET", route="/conditions",
                       request_params=[SEARCH, OFFSET, LIMIT, ENABLED, HAS_ALERTS, HAS_SHARE_MODE])
     def get_list_conditions_all_hosts(self, search=None, offset=None, limit=None, enabled=None,
                                       has_alerts=None, has_share_mode=None, **kwargs):
         return self._base_request(**kwargs)
 
     @expected_response(expected_status_code=200, expected_format=JSON)
-    @template_request(method="GET", route="/conditions/<condition_id>/indicators", 
+    @template_request(method="GET", route="/conditions/<condition_id>/indicators",
                       request_params=[OFFSET, LIMIT, CATEGORY_SHARE_MODE, SORT])
     def get_indicators_using_condition(self, condition_id, offset=None, limit=None,
                                        category_share_mode=None, sort=None, **kwargs):
@@ -560,7 +560,7 @@ class Conditions(_HX):
 
 
 class IndicatorCategories(_HX):
-    
+
     def __init__(self, hx_host, hx_port=None, verify=False, authenticator=None, username="", password=""):
         _HX.__init__(self, hx_host, hx_port=hx_port, verify=verify)
         if isinstance(authenticator, Authentication):
@@ -571,7 +571,7 @@ class IndicatorCategories(_HX):
     @expected_response(expected_status_code=200, expected_format=JSON)
     @template_request(method="GET", route="/indicator_categories",
                       request_params=[OFFSET, LIMIT, SHARE_MODE, SORT, FILTER_FIELD])
-    def get_list_indicator_categories(self, offset=None, limit=None, share_mode=None, 
+    def get_list_indicator_categories(self, offset=None, limit=None, share_mode=None,
                                       sort=None, filter_field=None, **kwargs):
         return self._base_request(**kwargs)
 
@@ -582,7 +582,7 @@ class IndicatorCategories(_HX):
 
     @expected_response(expected_status_code=201, expected_format=JSON)
     @template_request(method="PUT", route="/indicator_categories/<category_name>",
-                      json_body=["display_name", "retention_policy", "ui_edit_policy", 
+                      json_body=["display_name", "retention_policy", "ui_edit_policy",
                                  "ui_signature_enabled", "ui_source_alerts_enabled"])
     def new_indicator_category(self, category_name, display_name=None, retention_policy=None, ui_edit_policy=None,
                                ui_signature_enabled=None, ui_source_alerts_enabled=None, **kwargs):
@@ -615,18 +615,18 @@ class Alerts(_HX):
             self.AUTHENTICATION = authenticator
         elif username and password:
             self.AUTHENTICATION = Authentication(hx_host=hx_host, hx_port=hx_port, verify=verify, username=username, password=password)
-    
+
     @expected_response(expected_status_code=200, expected_format=JSON)
     @template_request(method="GET", route="/alerts/<alert_id>")
     def get_alert_by_id(self, alert_id, **kwargs):
         return self._base_request(**kwargs)
-        
+
     @expected_response(expected_status_code=200, expected_format=JSON)
     @template_request(method="GET", route="/alerts",
                       request_params=[OFFSET, LIMIT, HAS_SHARE_MODE, SORT, FILTER_FIELD, FILTER_QUERY])
     def get_list_alerts_all_hosts(self, offset=None, limit=None, has_share_mode=None, sort=None, filter_field=None, filterQuery=None, **kwargs):
         return self._base_request(**kwargs)
-        
+
     @expected_response(expected_status_code=204, expected_format=DEFAULT)
     @template_request(method="DELETE", route="/alerts/<alert_id>")
     def suppress_alert(self, alert_id, **kwargs):
@@ -648,14 +648,14 @@ class SourceAlerts(_HX):
        return self._base_request(**kwargs)
 
     @expected_response(expected_status_code=200, expected_format=JSON)
-    @template_request(method="GET", route="/source_alerts/", 
+    @template_request(method="GET", route="/source_alerts/",
                       request_params=[PRIMARY_INDICATOR_ID, OFFSET, LIMIT, SORT])
     def get_list_source_alerts_all_hosts(self, primary_indicator_id=None, offset=None, limit=None, sort=None, **kwargs):
         return self._base_request(**kwargs)
 
     @expected_response(expected_status_code=200, expected_format=JSON)
-    @template_request(method="GET", route="/source_alerts/<source_alert_id>/alerted_hosts", 
-                      request_params=[HAS_ACTIVE_THREATS, HAS_EXPLOIT_ALERTS, HAS_EXPLOIT_BLOCKS, 
+    @template_request(method="GET", route="/source_alerts/<source_alert_id>/alerted_hosts",
+                      request_params=[HAS_ACTIVE_THREATS, HAS_EXPLOIT_ALERTS, HAS_EXPLOIT_BLOCKS,
                                       HAS_MALWARE_ALERTS, LIMIT, OFFSET, SEARCH, SORT, FILTER_FIELD])
     def get_list_alerted_hosts_for_source_alert(self, source_alert_id, has_active_threates=None,
                                                 has_exploit_alerts=None, has_exploit_blocks=None,
@@ -664,7 +664,7 @@ class SourceAlerts(_HX):
         return self._base_request(**kwargs)
 
     @expected_response(expected_status_code=200, expected_format=JSON)
-    @template_request(method="GET", route="/source_alerts/<source_alert_id>/alerts", 
+    @template_request(method="GET", route="/source_alerts/<source_alert_id>/alerts",
                       request_params=[OFFSET, LIMIT, SORT, FILTER_FIELD])
     def get_lists_of_alerts_for_source_alert(self, source_alert_id, offset=None, limit=None, sort=None, filter_field=None, **kwargs):
         return self._base_request(**kwargs)
@@ -688,7 +688,7 @@ class Acquisition(_HX):
             self.AUTHENTICATION = authenticator
         elif username and password:
             self.AUTHENTICATION = Authentication(hx_host=hx_host, hx_port=hx_port, verify=verify, username=username, password=password)
-    
+
     @expected_response(expected_status_code=200, expected_format=JSON)
     @template_request(method="GET", route="/acqs/files", request_params=[SEARCH, OFFSET, LIMIT, SORT, FILTER_FIELD])
     def get_list_file_acquisitions_all_hosts(self, search=None, offset=None, limit=None,
@@ -773,7 +773,7 @@ class Acquisition(_HX):
         return self._base_request(**kwargs)
 
     @expected_response(expected_status_code=200, expected_format=JSON)
-    @template_request(method="GET", route="/acqs/bulk/<bulk_id>/hosts", 
+    @template_request(method="GET", route="/acqs/bulk/<bulk_id>/hosts",
                       request_params=[OFFSET, LIMIT, SORT, FILTER_FIELD])
     def get_list_hosts_in_bulk_acquisition(self, bulk_id, offset=None, limit=None, sort=None,
                                            filter_field=None, **kwargs):
@@ -781,7 +781,7 @@ class Acquisition(_HX):
 
     @expected_response(expected_status_code=200, expected_format=JSON)
     @template_request(method="GET", route="/acqs/bulk/<bulk_id>/skipped_hosts",
-                      request_params=[HAS_ACTIVE_THREATS, HAS_EXPLOIT_ALERTS, HAS_EXPLOIT_BLOCKS, HAS_MALWARE_ALERTS, 
+                      request_params=[HAS_ACTIVE_THREATS, HAS_EXPLOIT_ALERTS, HAS_EXPLOIT_BLOCKS, HAS_MALWARE_ALERTS,
                                       HOSTS_SET_ID, LIMIT, OFFSET, SORT, FILTER_FIELD])
     def get_hosts_skipped_in_bulk_acquisition(self, bulk_id, has_active_threats=None, has_exploit_alerts=None,
                                               has_exploit_blocks=None, has_malware_alerts=None, host_set_id=None,
@@ -837,12 +837,12 @@ class Quarantine(_HX):
     @expected_response(expected_status_code=200, expected_format=JSON)
     @template_request(method="GET", route="/hosts/<agent_id>/quarantines",
                       request_params=[OFFSET, LIMIT, SORT, FILTER_FIELD])
-    def get_list_quarantined_files_for_host(self, agent_id=None, offset=None, limit=None, 
+    def get_list_quarantined_files_for_host(self, agent_id=None, offset=None, limit=None,
                                             sort=None, filter_field=None, **kwargs):
         return self._base_request(**kwargs)
 
     @expected_response(expected_status_code=200, expected_format=JSON)
-    @template_request(method="GET", route="/quarantines/", 
+    @template_request(method="GET", route="/quarantines/",
                       request_params=[OFFSET, LIMIT, SORT, FILTER_FIELD])
     def get_list_quarantined_files(self, offset=None, limit=None, sort=None, filter_field=None, **kwargs):
         return self._base_request(**kwargs)
@@ -949,7 +949,7 @@ class CustomChannels(_HX):
             self.AUTHENTICATION = Authentication(hx_host=hx_host, hx_port=hx_port, verify=verify, username=username, password=password)
 
     @expected_response(expected_status_code=200, expected_format=JSON)
-    @template_request(method="GET", route="/host_policies/channels", 
+    @template_request(method="GET", route="/host_policies/channels",
                       request_params=[OFFSET, LIMIT, SEARCH, SORT])
     def get_list_configuration_channels(self, offset=None, limit=None, search=None, sort=None, **kwargs):
         return self._base_request(**kwargs)
