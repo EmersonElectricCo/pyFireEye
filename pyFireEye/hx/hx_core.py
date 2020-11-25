@@ -1001,3 +1001,21 @@ class CustomChannels(_HX):
                                    host_set_id=None, limit=None, offset=None, search=None, sort=None,
                                    filter_field=None,**kwargs):
         return self._base_request(**kwargs)
+
+
+class ProcessTracker(_HX):
+
+    API_BASE_ROUTE = "/hx/api/plugins"
+
+    def __init__(self, hx_host, hx_port=None, verify=False, authenticator=None, username="", password=""):
+        _HX.__init__(self, hx_host, hx_port=hx_port, verify=verify)
+        if isinstance(authenticator, Authentication):
+            self.AUTHENTICATION = authenticator
+        elif username and password:
+            self.AUTHENTICATION = Authentication(hx_host=hx_host, hx_port=hx_port, verify=verify, username=username, password=password)
+
+    @expected_response(expected_status_code=200, expected_format=JSON)
+    @template_request(method="GET", route="/process-tracker/v1/events",
+                      request_params=[OFFSET, LIMIT, SORT, FILTER_FIELD])
+    def get_processtracker_events(self, offset=None, limit=None, sort=None, filter_field=None, **kwargs):
+        return self._base_request(**kwargs)
