@@ -52,7 +52,13 @@ class _HX:
         :return: requests.Reponse object after the request is made
         """
         url = self._build_url() + route
-        response = requests.request(method=method, url=url, verify=self.verify, **kwargs)
+        response = None
+        with requests.Session() as s:
+            s.auth = kwargs.get("auth", None)
+            s.headers = kwargs.get("headers", None)
+            s.params = kwargs.get("params", None)
+            s.json = kwargs.get("json", None)
+            response = s.request(method=method, url=url, verify=self.verify)
         return response
 
     @expected_response(expected_status_code=200, expected_format=JSON)
