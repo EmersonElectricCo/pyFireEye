@@ -36,12 +36,21 @@ FILTER_QUERY = "filterQuery"
 # Containment
 STATE_UPDATE_TIME = "state_update_time"
 
+# Headers
+X_OFFSET = "X-OFFSET"
+X_MAX_MESSAGES = "X-MAX-MESSAGES"
+X_POLL_TIMEOUT = "X-POLL-TIMEOUT"
 
 # IF YOU NEED TO USE ONE OF THE PARAMETERS IN THIS DICTIONARY, USE THE REPLACEMENT
 param_arg_map = {
+    # Params
     "host_set_id": HOSTS_SET_ID,
     "category_share_mode": CATEGORY_SHARE_MODE,
-    "primary_indicator_id": PRIMARY_INDICATOR_ID
+    "primary_indicator_id": PRIMARY_INDICATOR_ID,
+    # Headers
+    "x_offset": X_OFFSET,
+    "x_max_messages": X_MAX_MESSAGES,
+    "x_poll_timeout": X_POLL_TIMEOUT
 }
 
 # AX/CM Params

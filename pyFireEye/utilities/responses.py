@@ -76,9 +76,11 @@ def _json_response(response):
     data = content.get("data") if isinstance(content, dict) else None
     if data:
         del content["data"]
-    entries = data.get("entries") if data else None
+    entries = data.get("entries") if isinstance(data, dict) else None
     if entries:
         del data["entries"]
+    if not entries and isinstance(data, list):
+        entries = data
 
     return JsonResponse(message=message, status=status, headers=headers, content=content, data=data, entries=entries)
 
