@@ -21,27 +21,6 @@ except:
 tag_pattern = re.compile("<\w[a-zA-Z0-9_]{0,31}>")
 
 
-def _clean_params(request_params, **kwargs):
-    """
-    This function is used by the template request to make sure that params which do not
-    follow a usable argument style are properly converted to the correct params
-    before being passed into the params field for requests
-    :param request_params: list of request params
-    :param kwargs:
-    :return:
-    """
-    replaced_keys = []
-
-    kwargs_copy = kwargs.copy()
-    for k, v in kwargs_copy.items():
-        if k in param_arg_map and param_arg_map.get(k) in request_params:
-            kwargs[param_arg_map.get(k)] = v
-            replaced_keys.append(k)
-
-    for k in replaced_keys:
-        del kwargs[k]
-
-
 def _route_update(route, **kwargs):
     """
     Used by the template_request decorator to allow the route to be
@@ -105,6 +84,16 @@ def _check_args(args, **kwargs):
         return newdict
     if not isinstance(args, list):
         raise TypeError("Expected required to be list")
+
+    replaced_keys = []
+    kwargs_copy = kwargs.copy()
+    for k, v in kwargs_copy.items():
+        if k in param_arg_map and param_arg_map.get(k) in args:
+            kwargs[param_arg_map.get(k)] = v
+            replaced_keys.append(k)
+    for k in replaced_keys:
+        del kwargs[k]
+
     for parameter in args:
         if kwargs.get(parameter) is not None:
             newdict[parameter] = kwargs.get(parameter)
@@ -165,10 +154,12 @@ def template_request(method, route, request_params=None, json_body=None, request
                 raise UnknownHTTPMethodException(method=method.upper())
             kwargs["route"] = _route_update(route=route, **kwargs)
             kwargs["method"] = method
-            _clean_params(request_params, **kwargs)
             kwargs["params"] = _check_args(request_params, **kwargs)
             kwargs["json"] = _check_args(json_body, **kwargs)
             kwargs["headers"] = _check_args(request_headers, **kwargs)
+            accept_type = kwargs.get("expected_format", None)
+            if accept_type == "JSON":
+                kwargs["headers"]["Accept"] = "application/json"
 
             if require_auth:
                 if self.AUTHENTICATION:
@@ -212,6 +203,7 @@ def expected_response(expected_status_code=None, expected_format=None):
     def decorate(func):
         @wraps(func)
         def wrap(*args, **kwargs):
+            kwargs["expected_format"] = expected_format
             response = func(*args, **kwargs)
             if not isinstance(response, Response):
                 raise ExpectedResponseException(response)
