@@ -1025,3 +1025,25 @@ class ProcessTracker(_HX):
                       request_params=[OFFSET, LIMIT, SORT, FILTER_FIELD])
     def get_processtracker_events(self, offset=None, limit=None, sort=None, filter_field=None, **kwargs):
         return self._base_request(**kwargs)
+
+
+class MessageBus(_HX):
+
+    API_BASE_ROUTE = "/hx/api/services/topic"
+
+    def __init__(self, hx_host, hx_port=None, verify=False, authenticator=None, username="", password=""):
+        _HX.__init__(self, hx_host, hx_port=hx_port, verify=verify)
+        if isinstance(authenticator, Authentication):
+            self.AUTHENTICATION = authenticator
+        elif username and password:
+            self.AUTHENTICATION = Authentication(hx_host=hx_host, hx_port=hx_port, verify=verify, username=username, password=password)
+
+    @expected_response(expected_status_code=[200, 204], expected_format=JSON)
+    @template_request(method="GET", route="/PROCESS_TRACKER", request_headers=[X_OFFSET, X_MAX_MESSAGES, X_POLL_TIMEOUT])
+    def get_process_events(self, x_offset=None, x_max_messages=None, x_poll_timeout="45", **kwargs):
+        return self._base_request(**kwargs)
+
+    @expected_response(expected_status_code=[200, 204], expected_format=JSON)
+    @template_request(method="GET", route="/HX_ALERTS", request_headers=[X_OFFSET, X_MAX_MESSAGES, X_POLL_TIMEOUT])
+    def get_process_alerts(self, x_offset=None, x_max_messages=None, x_poll_timeout="45", **kwargs):
+        return self._base_request(**kwargs)
