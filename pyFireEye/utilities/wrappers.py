@@ -157,9 +157,9 @@ def template_request(method, route, request_params=None, json_body=None, request
             kwargs["params"] = _check_args(request_params, **kwargs)
             kwargs["json"] = _check_args(json_body, **kwargs)
             kwargs["headers"] = _check_args(request_headers, **kwargs)
-            accept_type = kwargs.get("expected_format", None)
-            if accept_type == "JSON":
-                kwargs["headers"]["Accept"] = "application/json"
+            # accept_type = kwargs.get("expected_format", None)
+            # if accept_type == "JSON":
+            #     kwargs["headers"]["Accept"] = "application/json"
 
             if require_auth:
                 if self.AUTHENTICATION:
@@ -203,7 +203,7 @@ def expected_response(expected_status_code=None, expected_format=None):
     def decorate(func):
         @wraps(func)
         def wrap(*args, **kwargs):
-            kwargs["expected_format"] = expected_format
+            # kwargs["expected_format"] = expected_format
             response = func(*args, **kwargs)
             if not isinstance(response, Response):
                 raise ExpectedResponseException(response)
