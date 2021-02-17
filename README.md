@@ -1,3 +1,5 @@
+## This project is no longer maintained. Feel free to fork this project and continue development of it!
+
 # pyFireEye
 
 Python API bindings for FireEye Products
